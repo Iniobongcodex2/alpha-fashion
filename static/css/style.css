@@ -1,0 +1,68 @@
+/* ALPHA FASHION CUSTOM PALETTE */
+:root {
+    --alpha-navy: #0A1E3D;
+    --alpha-gold: #C9A84C;
+    --alpha-blue: #1A4B8C;
+    --alpha-bg: #F4F6F9;
+    --alpha-text: #2D3748;
+}
+
+body {
+    background-color: var(--alpha-bg);
+    color: var(--alpha-text);
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+/* Navbar Styling */
+.navbar-custom {
+    background-color: var(--alpha-navy);
+}
+
+.navbar-brand {
+    color: var(--alpha-gold) !important;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+.nav-link {
+    color: #FFFFFF !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--alpha-gold) !important;
+}
+
+/* Button Styling */
+.btn-alpha-gold {
+    background-color: var(--alpha-gold);
+    color: var(--alpha-navy);
+    font-weight: bold;
+    border: none;
+}
+
+.btn-alpha-gold:hover {
+    background-color: #b5953e;
+    color: var(--alpha-navy);
+}
+
+.btn-alpha-navy {
+    background-color: var(--alpha-navy);
+    color: #FFFFFF;
+    border: none;
+}
+
+.btn-alpha-navy:hover {
+    background-color: var(--alpha-blue);
+    color: #FFFFFF;
+}
+
+/* Footer Styling */
+.footer {
+    margin-top: 50px;
+    padding: 20px 0;
+    background-color: var(--alpha-navy);
+    color: #FFFFFF;
+    text-align: center;
+    border-top: 3px solid var(--alpha-gold);
+}

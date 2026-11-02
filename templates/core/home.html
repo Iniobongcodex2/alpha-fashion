@@ -1,10 +1,43 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>ALPHA FASHION</title>
-</head>
-<body>
-    <h1>Welcome to ALPHA FASHION</h1>
-    <p>YOUR BRAND. YOUR COLLECTION. YOUR DIGITAL STORE.</p>
-</body>
-</html>
+{% extends 'base.html' %}
+
+{% block title %}Home - ALPHA FASHION{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-4 fw-bold" style="color: var(--alpha-navy);">Welcome to ALPHA FASHION</h1>
+    <p class="lead mt-3" style="color: var(--alpha-gold); font-weight: 500; letter-spacing: 1px;">YOUR BRAND. YOUR COLLECTION. YOUR DIGITAL STORE.</p>
+    
+    <div class="mt-5">
+        <!-- CHANGED THIS LINE to link to the shop page -->
+        <a href="{% url 'shop' %}" class="btn btn-alpha-gold btn-lg px-4 me-2">Explore Collection</a>
+        <a href="/admin/" class="btn btn-alpha-navy btn-lg px-4">Business Login</a>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm border-0" style="border-top: 4px solid var(--alpha-gold) !important;">
+            <div class="card-body text-center p-4">
+                <h5 class="card-title fw-bold" style="color: var(--alpha-navy);">Premium Boutiques</h5>
+                <p class="card-text text-muted mt-3">Discover curated collections from top fashion retailers.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm border-0" style="border-top: 4px solid var(--alpha-gold) !important;">
+            <div class="card-body text-center p-4">
+                <h5 class="card-title fw-bold" style="color: var(--alpha-navy);">Direct Enquiries</h5>
+                <p class="card-text text-muted mt-3">Chat directly with sellers via WhatsApp to secure your favourite items.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card mb-4 shadow-sm border-0" style="border-top: 4px solid var(--alpha-gold) !important;">
+            <div class="card-body text-center p-4">
+                <h5 class="card-title fw-bold" style="color: var(--alpha-navy);">Secure Platform</h5>
+                <p class="card-text text-muted mt-3">A reliable multi-tenant ecosystem for every brand.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

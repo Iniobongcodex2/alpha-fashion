@@ -1,41 +1,57 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}ALPHA FASHION{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- ALPHA FASHION CUSTOM CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header>
-        <h1>ALPHA FASHION</h1>
-        <p>YOUR BRAND. YOUR COLLECTION. YOUR DIGITAL STORE.</p>
-        <nav>
-            {% if user.is_authenticated %}
-                <span>Welcome, {{ user.username }}!</span> | 
-                <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit">Log Out</button>
-                </form>
-            {% else %}
-                <a href="{% url 'login' %}">Business Login</a>
-            {% endif %}
-        </nav>
-        <hr>
-    </header>
+    <!-- NAVIGATION BAR -->
+    <nav class="navbar navbar-expand-lg navbar-custom py-3">
+        <div class="container">
+            <a class="navbar-brand" href="/">ALPHA FASHION</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Shop</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/admin/">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <!-- MAIN CONTENT -->
-    <main>
+    <!-- MAIN CONTENT AREA -->
+    <div class="container mt-5">
         {% block content %}
         {% endblock %}
-    </main>
+    </div>
 
     <!-- FOOTER -->
-    <footer>
-        <hr>
-        <p>&copy; 2026 ALPHA FASHION. All rights reserved.</p>
+    <footer class="footer">
+        <div class="container">
+            <p class="mb-0" style="color: var(--alpha-gold); font-weight: bold; letter-spacing: 1px;">YOUR BRAND. YOUR COLLECTION. YOUR DIGITAL STORE.</p>
+            <p class="mb-0 mt-2">&copy; 2026 ALPHA FASHION. All rights reserved.</p>
+        </div>
     </footer>
 
+    <!-- Bootstrap 5 JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
