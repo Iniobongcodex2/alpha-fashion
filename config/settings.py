@@ -123,3 +123,7 @@ MEDIA_ROOT = BASE_DIR / 'media' # <--- ADDED: Where images are saved on the comp
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Authentication Redirects
+LOGIN_REDIRECT_URL = 'home'  # Where to go after successful login
+LOGOUT_REDIRECT_URL = 'home' # Where to go after logging out

@@ -1,15 +1,41 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ALPHA FASHION{% endblock %}</title>
+</head>
+<body>
 
-{% block title %}Home - ALPHA FASHION{% endblock %}
+    <!-- HEADER -->
+    <header>
+        <h1>ALPHA FASHION</h1>
+        <p>YOUR BRAND. YOUR COLLECTION. YOUR DIGITAL STORE.</p>
+        <nav>
+            {% if user.is_authenticated %}
+                <span>Welcome, {{ user.username }}!</span> | 
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit">Log Out</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">Business Login</a>
+            {% endif %}
+        </nav>
+        <hr>
+    </header>
 
-{% block content %}
-    <h1>Welcome to the ALPHA FASHION Platform</h1>
-    <p>Your digital catalogue is officially connected and ready.</p>
-    
-    <h3>Next Steps:</h3>
-    <ul>
-        <li>Register your Business in the Admin Panel</li>
-        <li>Upload your first Categories and Products</li>
-        <li>View your public storefront</li>
-    </ul>
-{% endblock %}
+    <!-- MAIN CONTENT -->
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <hr>
+        <p>&copy; 2026 ALPHA FASHION. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
