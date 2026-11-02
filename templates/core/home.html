@@ -8,8 +8,8 @@
     <p class="lead mt-3" style="color: var(--alpha-gold); font-weight: 500; letter-spacing: 1px;">YOUR BRAND. YOUR COLLECTION. YOUR DIGITAL STORE.</p>
     
     <div class="mt-5">
-        <!-- CHANGED THIS LINE to link to the shop page -->
-        <a href="{% url 'shop' %}" class="btn btn-alpha-gold btn-lg px-4 me-2">Explore Collection</a>
+        <!-- CHANGED THIS LINE to 'shop_list' so Django can find the URL -->
+        <a href="{% url 'shop_list' %}" class="btn btn-alpha-gold btn-lg px-4 me-2">Explore Collection</a>
         <a href="/admin/" class="btn btn-alpha-navy btn-lg px-4">Business Login</a>
     </div>
 </div>

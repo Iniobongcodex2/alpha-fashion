@@ -26,6 +26,9 @@ class Business(models.Model):
     def __str__(self):
         return self.business_name
 
+    class Meta:
+        verbose_name_plural = "Businesses" # Fixes "Businesss" in admin
+
 
 class BusinessMembership(models.Model):
     ROLE_CHOICES = (
@@ -40,6 +43,9 @@ class BusinessMembership(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.business.business_name} ({self.role})"
+
+    class Meta:
+        verbose_name_plural = "Business Memberships"
 
 
 class Category(models.Model):
@@ -76,6 +82,9 @@ class Product(models.Model):
     def __str__(self):
         return f"{self.product_name} - {self.business.business_name}"
 
+    class Meta:
+        verbose_name_plural = "Products"
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
@@ -85,6 +94,9 @@ class ProductImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.product.product_name}"
+
+    class Meta:
+        verbose_name_plural = "Product Images"
 
 
 class ProductVariant(models.Model):
@@ -97,6 +109,9 @@ class ProductVariant(models.Model):
 
     def __str__(self):
         return f"{self.product.product_name} - {self.size} / {self.colour}"
+
+    class Meta:
+        verbose_name_plural = "Product Variants"
 
 
 class CustomerEnquiry(models.Model):

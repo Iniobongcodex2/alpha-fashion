@@ -52,7 +52,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'], # <--- UPDATED: Tells Django where to find HTML files
+        'DIRS': [BASE_DIR / 'templates'], # Tells Django where to find HTML files
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -113,11 +113,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static'] # <--- ADDED: Where our custom CSS/JS will live
+STATICFILES_DIRS = [BASE_DIR / 'static'] 
 
 # Media files (User uploaded images for products)
-MEDIA_URL = '/media/' # <--- ADDED: URL path for images
-MEDIA_ROOT = BASE_DIR / 'media' # <--- ADDED: Where images are saved on the computer
+MEDIA_URL = '/media/' 
+MEDIA_ROOT = BASE_DIR / 'media' 
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
@@ -125,5 +125,6 @@ MEDIA_ROOT = BASE_DIR / 'media' # <--- ADDED: Where images are saved on the comp
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Authentication Redirects
-LOGIN_REDIRECT_URL = 'home'  # Where to go after successful login
-LOGOUT_REDIRECT_URL = 'home' # Where to go after logging out
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'dashboard'
+LOGOUT_REDIRECT_URL = 'home'
