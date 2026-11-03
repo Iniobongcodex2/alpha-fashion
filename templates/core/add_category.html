@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Category - ALPHA FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 600px;">
+    <h2 class="mb-4" style="color: var(--alpha-navy);">Add New Category</h2>
+    
+    <form method="POST" enctype="multipart/form-data" class="card p-4 shadow-sm border-0">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label fw-bold">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="text-danger small mt-1">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-alpha-gold px-4">Save Category</button>
+            <a href="{% url 'category_list' %}" class="btn btn-outline-secondary px-4 ms-2">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

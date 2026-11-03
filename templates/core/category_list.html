@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Categories - ALPHA FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: var(--alpha-navy);">Your Categories</h2>
+        <a href="{% url 'add_category' %}" class="btn btn-alpha-gold">+ Add New Category</a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body">
+            <table class="table table-hover mb-0">
+                <thead style="background-color: var(--alpha-navy); color: white;">
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Description</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <td class="fw-bold">{{ category.name }}</td>
+                        <td>{{ category.description|default:"No description" }}</td>
+                        <td>
+                            {% if category.is_active %}
+                                <span class="badge bg-success">Active</span>
+                            {% else %}
+                                <span class="badge bg-secondary">Inactive</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="text-center text-muted">You haven't created any categories yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="mt-3">
+        <a href="{% url 'dashboard' %}" class="text-decoration-none">&larr; Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}

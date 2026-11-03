@@ -5,10 +5,13 @@
     <h1 style="color: #1a1a5a;">{{ business.business_name }} Dashboard</h1>
     <p>Welcome, <strong>{{ request.user.username }}</strong> (Role: {{ role }})</p>
     
-    <!-- ADDED THE BUTTON HERE -->
+    <!-- ADDED THE BUTTONS HERE -->
     <div style="margin-top: 20px; margin-bottom: 20px;">
         <a href="{% url 'add_product' %}" style="background-color: #e5b80b; color: #000; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;">
             + Add New Product
+        </a>
+        <a href="{% url 'category_list' %}" style="background-color: #1a1a5a; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block; margin-left: 10px;">
+            Manage Categories
         </a>
     </div>
 

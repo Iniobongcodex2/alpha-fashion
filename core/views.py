@@ -52,3 +52,37 @@ def add_product(request):
         form = ProductForm()
 
     return render(request, 'core/add_product.html', {'form': form, 'business': membership.business})
+
+# Import CategoryForm at the top!
+from .forms import ProductForm, CategoryForm
+from .models import Business, BusinessMembership, Product, ProductImage, Category
+
+# ... (keep your existing views) ...
+
+@login_required
+def add_category(request):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = CategoryForm(request.POST, request.FILES)
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.business = membership.business
+            category.save()
+            return redirect('dashboard') # We'll update this later to go to a category list
+    else:
+        form = CategoryForm()
+
+    return render(request, 'core/add_category.html', {'form': form})
+
+@login_required
+def category_list(request):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+        
+    categories = Category.objects.filter(business=membership.business)
+    
+    return render(request, 'core/category_list.html', {'categories': categories})
