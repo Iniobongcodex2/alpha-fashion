@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Categories - ALPHA FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: var(--alpha-navy);">Manage Categories</h2>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="row">
+        <!-- Left Side: List of Categories -->
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 p-4">
+                <h4 class="mb-3">Your Categories</h4>
+                {% if categories %}
+                    <ul class="list-group">
+                        {% for category in categories %}
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <strong>{{ category.name }}</strong>
+                                    <br><small class="text-muted">{{ category.description|default:"No description" }}</small>
+                                </div>
+                                <span class="badge bg-secondary rounded-pill">{{ category.products.count }} Products</span>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted">You haven't created any categories yet.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Side: Add Category Form -->
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 p-4">
+                <h4 class="mb-3">Add New Category</h4>
+                <form method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-alpha-gold w-100">Save Category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -2,12 +2,17 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    # Public Storefront URLs
     path('', views.home, name='home'),
+    path('shop/', views.shop_list, name='shop_list'),
+    path('shop/<slug:slug>/', views.business_storefront, name='business_storefront'),
+    
+    # Product Details
+    path('product/<int:pk>/', views.product_detail, name='product_detail'),
+
+    # Dashboard URLs (Secured)
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/add-product/', views.add_product, name='add_product'),
-    path('shop/', views.shop_list, name='shop_list'),
-    path('dashboard/category/add/', views.add_category, name='add_category'),
-    path('dashboard/categories/', views.category_list, name='category_list'),
-    path('shop/<slug:slug>/', views.business_storefront, name='business_storefront'),
-    path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('dashboard/categories/', views.manage_categories, name='manage_categories'),
+    path('dashboard/profile/', views.manage_profile, name='manage_profile'),
 ]

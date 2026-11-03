@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Business, BusinessMembership, Product, ProductImage
-from .forms import ProductForm
+from .models import Business, BusinessMembership, Product, ProductImage, Category
+from .forms import ProductForm, CategoryForm, BusinessForm
 
 def home(request):
     return render(request, 'core/home.html')
@@ -15,20 +15,29 @@ def business_storefront(request, slug):
     products = Product.objects.filter(business=business, publication_status='Published')
     return render(request, 'core/storefront.html', {'business': business, 'products': products})
 
-def product_detail(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
+def product_detail(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    
+    # Security check: Only show if published and business is active
     if product.publication_status != 'Published' or product.business.account_status != 'Active':
         return redirect('home')
-    return render(request, 'core/product_detail.html', {'product': product})
+        
+    return render(request, 'core/product_detail.html', {'product': product, 'business': product.business})
 
 @login_required
 def dashboard(request):
     membership = BusinessMembership.objects.filter(user=request.user).first()
     if not membership:
         return redirect('home')
+        
     business = membership.business
     products = Product.objects.filter(business=business)
-    return render(request, 'core/dashboard.html', {'business': business, 'products': products, 'role': membership.role})
+    
+    return render(request, 'core/dashboard.html', {
+        'business': business, 
+        'products': products, 
+        'role': membership.role
+    })
 
 @login_required
 def add_product(request):
@@ -37,7 +46,8 @@ def add_product(request):
         return redirect('home')
 
     if request.method == 'POST':
-        form = ProductForm(request.POST, request.FILES)
+        # Pass the business so the form can filter categories
+        form = ProductForm(request.POST, request.FILES, business=membership.business)
         if form.is_valid():
             product = form.save(commit=False)
             product.business = membership.business
@@ -49,40 +59,53 @@ def add_product(request):
                 
             return redirect('dashboard')
     else:
-        form = ProductForm()
+        form = ProductForm(business=membership.business)
 
     return render(request, 'core/add_product.html', {'form': form, 'business': membership.business})
 
-# Import CategoryForm at the top!
-from .forms import ProductForm, CategoryForm
-from .models import Business, BusinessMembership, Product, ProductImage, Category
-
-# ... (keep your existing views) ...
-
 @login_required
-def add_category(request):
+def manage_categories(request):
     membership = BusinessMembership.objects.filter(user=request.user).first()
     if not membership:
         return redirect('home')
 
+    business = membership.business
+    categories = Category.objects.filter(business=business)
+
     if request.method == 'POST':
+        # Added request.FILES so category images work
         form = CategoryForm(request.POST, request.FILES)
         if form.is_valid():
             category = form.save(commit=False)
-            category.business = membership.business
+            category.business = business
             category.save()
-            return redirect('dashboard') # We'll update this later to go to a category list
+            return redirect('manage_categories')
     else:
         form = CategoryForm()
 
-    return render(request, 'core/add_category.html', {'form': form})
+    return render(request, 'core/manage_categories.html', {
+        'categories': categories,
+        'form': form,
+        'business': business
+    })
 
 @login_required
-def category_list(request):
+def manage_profile(request):
     membership = BusinessMembership.objects.filter(user=request.user).first()
     if not membership:
         return redirect('home')
-        
-    categories = Category.objects.filter(business=membership.business)
-    
-    return render(request, 'core/category_list.html', {'categories': categories})
+
+    business = membership.business
+
+    if request.method == 'POST':
+        form = BusinessForm(request.POST, request.FILES, instance=business)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = BusinessForm(instance=business)
+
+    return render(request, 'core/manage_profile.html', {
+        'form': form,
+        'business': business
+    })

@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Store Settings - ALPHA FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 700px;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="color: var(--alpha-navy);">Store Settings</h2>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+
+    <div class="card shadow-sm border-0 p-4">
+        <!-- Note the enctype for the logo upload! -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            {% for field in form %}
+                <div class="mb-3">
+                    <label class="form-label fw-bold">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <div class="text-danger small mt-1">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+            {% endfor %}
+            
+            <button type="submit" class="btn btn-alpha-gold w-100 mt-3">Save Settings</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
