@@ -30,7 +30,8 @@
                     <p style="color: #d4af37; font-size: 1.2rem; font-weight: bold;">{{ business.currency }} {{ product.price }}</p>
                     <p style="color: #666; margin-bottom: 15px;">{{ product.category.name|default:"Uncategorized" }}</p>
                     
-                    <a href="#" style="display: inline-block; background-color: #1a2a44; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                    <!-- UPDATED WHATSAPP BUTTON HERE -->
+                    <a href="https://wa.me/{{ business.whatsapp_number }}?text=Hi%20{{ business.business_name }},%20I%20am%20interested%20in%20the%20{{ product.product_name }}%20({{ business.currency }}%20{{ product.price }}).%20Is%20it%20available%3F" target="_blank" style="display: inline-block; background-color: #1a2a44; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
                         Enquire on WhatsApp
                     </a>
                 </div>
