@@ -1,46 +1,54 @@
-{% extends 'base.html' %}
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from .models import Business, BusinessMembership, Product, ProductImage
+from .forms import ProductForm
 
-{% block title %}{{ business.business_name }} - ALPHA FASHION{% endblock %}
+def home(request):
+    return render(request, 'core/home.html')
 
-{% block content %}
-<div style="text-align: center; padding: 40px 20px; background-color: #faf9f6; border-bottom: 1px solid #eee;">
-    <h1 style="color: #1a2a44; font-size: 2.5rem; margin-bottom: 10px;">{{ business.business_name }}</h1>
-    <p style="color: #666; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">{{ business.description }}</p>
-</div>
+def shop_list(request):
+    businesses = Business.objects.filter(account_status='Active')
+    return render(request, 'core/shop_list.html', {'businesses': businesses})
 
-<div style="max-width: 1200px; margin: 40px auto; padding: 20px;">
-    <h2 style="color: #1a2a44; margin-bottom: 20px;">Our Collection</h2>
-    
-    {% if products %}
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
-            {% for product in products %}
-                <div style="border: 1px solid #eee; padding: 20px; border-radius: 8px; text-align: center; background-color: white;">
-                    
-                    <!-- IMAGE DISPLAY LOGIC -->
-                    {% if product.images.all %}
-                        <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
-                    {% else %}
-                        <div style="width: 100%; height: 250px; background-color: #f4f4f4; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-bottom: 15px; color: #aaa;">
-                            No Image
-                        </div>
-                    {% endif %}
+def business_storefront(request, slug):
+    business = get_object_or_404(Business, slug=slug)
+    products = Product.objects.filter(business=business, publication_status='Published')
+    return render(request, 'core/storefront.html', {'business': business, 'products': products})
 
-                    <h3 style="margin-bottom: 10px;">{{ product.product_name }}</h3>
-                    <p style="color: #d4af37; font-size: 1.2rem; font-weight: bold;">{{ business.currency }} {{ product.price }}</p>
-                    <p style="color: #666; margin-bottom: 15px;">{{ product.category.name|default:"Uncategorized" }}</p>
-                    
-                    <!-- WHATSAPP ENQUIRY BUTTON -->
-                    <a href="https://wa.me/{{ business.whatsapp_number|cut:' '|cut:'+'|cut:'-' }}?text=Hi%20{{ business.business_name|urlencode }},%20I%20am%20interested%20in%20the%20{{ product.product_name|urlencode }}%20({{ business.currency }}%20{{ product.price }}).%20Is%20it%20available%3F" 
-                       target="_blank" 
-                       style="display: inline-block; background-color: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
-                        Enquire on WhatsApp
-                    </a>
-                    
-                </div>
-            {% endfor %}
-        </div>
-    {% else %}
-        <p style="color: #666;">No products published yet. Check back soon!</p>
-    {% endif %}
-</div>
-{% endblock %}
+def product_detail(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if product.publication_status != 'Published' or product.business.account_status != 'Active':
+        return redirect('home')
+    return render(request, 'core/product_detail.html', {'product': product})
+
+@login_required
+def dashboard(request):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+    business = membership.business
+    products = Product.objects.filter(business=business)
+    return render(request, 'core/dashboard.html', {'business': business, 'products': products, 'role': membership.role})
+
+@login_required
+def add_product(request):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.business = membership.business
+            product.save()
+            
+            image = form.cleaned_data.get('image')
+            if image:
+                ProductImage.objects.create(product=product, image=image, is_primary=True)
+                
+            return redirect('dashboard')
+    else:
+        form = ProductForm()
+
+    return render(request, 'core/add_product.html', {'form': form, 'business': membership.business})
