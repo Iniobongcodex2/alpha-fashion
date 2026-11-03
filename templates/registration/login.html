@@ -1,12 +1,41 @@
 {% extends 'base.html' %}
 
-{% block title %}Login - ALPHA FASHION{% endblock %}
+{% block title %}Business Login - ALPHA FASHION{% endblock %}
 
 {% block content %}
-    <h2>Business Owner Login</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Log In</button>
-    </form>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card shadow-sm border-0 mt-5">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4" style="color: var(--alpha-navy); font-weight: bold;">Business Login</h2>
+                    <p class="text-center text-muted mb-4">Log in to manage your boutique</p>
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger small">
+                            Your username and password didn't match. Please try again.
+                        </div>
+                    {% endif %}
+
+                    <form method="post" action="{% url 'login' %}">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Username</label>
+                            <input type="text" name="username" class="form-control" required autofocus>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Password</label>
+                            <input type="password" name="password" class="form-control" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-alpha-gold w-100 py-2 fw-bold">Log In</button>
+                    </form>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

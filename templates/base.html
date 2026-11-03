@@ -22,16 +22,29 @@
                 <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Shop</a>
+                        <a class="nav-link" href="{% url 'shop_list' %}">Shop</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/admin/">Login</a>
-                    </li>
+                    
+                    {% if user.is_authenticated %}
+                        <li class="nav-item ms-lg-3">
+                            <a class="nav-link fw-bold" style="color: var(--alpha-gold) !important;" href="{% url 'dashboard' %}">Dashboard</a>
+                        </li>
+                        <li class="nav-item ms-lg-2">
+                            <form method="post" action="{% url 'logout' %}" class="m-0">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-sm btn-outline-light mt-2 mt-lg-0">Logout</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-item ms-lg-3">
+                            <a class="btn btn-sm btn-alpha-gold mt-2 mt-lg-0" href="{% url 'login' %}">Business Login</a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>

@@ -1,82 +1,46 @@
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
-from .models import Business, BusinessMembership, Product, ProductImage
-from .forms import ProductForm
+{% extends 'base.html' %}
 
-def home(request):
-    return render(request, 'core/home.html')
+{% block title %}{{ business.business_name }} - ALPHA FASHION{% endblock %}
 
-def shop_list(request):
-    # Fetch all active businesses
-    businesses = Business.objects.filter(account_status='Active')
-    return render(request, 'core/shop_list.html', {'businesses': businesses})
+{% block content %}
+<div style="text-align: center; padding: 40px 20px; background-color: #faf9f6; border-bottom: 1px solid #eee;">
+    <h1 style="color: #1a2a44; font-size: 2.5rem; margin-bottom: 10px;">{{ business.business_name }}</h1>
+    <p style="color: #666; font-size: 1.1rem; max-width: 600px; margin: 0 auto;">{{ business.description }}</p>
+</div>
 
-def business_storefront(request, slug):
-    # Fetch the specific business based on the URL slug
-    business = get_object_or_404(Business, slug=slug)
+<div style="max-width: 1200px; margin: 40px auto; padding: 20px;">
+    <h2 style="color: #1a2a44; margin-bottom: 20px;">Our Collection</h2>
     
-    # Fetch only this business's published products
-    products = Product.objects.filter(business=business, publication_status='Published')
-    
-    context = {
-        'business': business,
-        'products': products
-    }
-    return render(request, 'core/storefront.html', context)
+    {% if products %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
+            {% for product in products %}
+                <div style="border: 1px solid #eee; padding: 20px; border-radius: 8px; text-align: center; background-color: white;">
+                    
+                    <!-- IMAGE DISPLAY LOGIC -->
+                    {% if product.images.all %}
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                    {% else %}
+                        <div style="width: 100%; height: 250px; background-color: #f4f4f4; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-bottom: 15px; color: #aaa;">
+                            No Image
+                        </div>
+                    {% endif %}
 
-@login_required
-def dashboard(request):
-    # Find the business attached to the logged-in user
-    membership = BusinessMembership.objects.filter(user=request.user).first()
-    
-    if not membership:
-        # If the user isn't attached to a business, send them back home
-        return redirect('home')
-        
-    business = membership.business
-    # Get ONLY the products for this specific business
-    products = Product.objects.filter(business=business)
-
-    context = {
-        'business': business,
-        'products': products,
-        'role': membership.role
-    }
-    return render(request, 'core/dashboard.html', context)
-
-@login_required
-def add_product(request):
-    # First, verify the user belongs to a business
-    membership = BusinessMembership.objects.filter(user=request.user).first()
-    if not membership:
-        return redirect('home')
-
-    if request.method == 'POST':
-        # ADDED request.FILES HERE so Django accepts the image upload
-        form = ProductForm(request.POST, request.FILES)
-        if form.is_valid():
-            # Don't save to database yet
-            product = form.save(commit=False)
-            # Attach the business automatically for security!
-            product.business = membership.business
-            # Save to database
-            product.save()
-            
-            # NEW: Save the image if one was uploaded
-            image = form.cleaned_data.get('image')
-            if image:
-                ProductImage.objects.create(
-                    product=product,
-                    image=image,
-                    is_primary=True
-                )
-                
-            # Redirect back to the dashboard after saving
-            return redirect('dashboard')
-    else:
-        form = ProductForm()
-
-    return render(request, 'core/add_product.html', {
-        'form': form, 
-        'business': membership.business
-    })
+                    <h3 style="margin-bottom: 10px;">{{ product.product_name }}</h3>
+                    <p style="color: #d4af37; font-size: 1.2rem; font-weight: bold;">{{ business.currency }} {{ product.price }}</p>
+                    <p style="color: #666; margin-bottom: 15px;">{{ product.category.name|default:"Uncategorized" }}</p>
+                    
+                    <!-- WHATSAPP ENQUIRY BUTTON -->
+                    <a href="https://wa.me/{{ business.whatsapp_number|cut:' '|cut:'+'|cut:'-' }}?text=Hi%20{{ business.business_name|urlencode }},%20I%20am%20interested%20in%20the%20{{ product.product_name|urlencode }}%20({{ business.currency }}%20{{ product.price }}).%20Is%20it%20available%3F" 
+                       target="_blank" 
+                       style="display: inline-block; background-color: #25D366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                        Enquire on WhatsApp
+                    </a>
+                    
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="color: #666;">No products published yet. Check back soon!</p>
+    {% endif %}
+</div>
+{% endblock %}
