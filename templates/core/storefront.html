@@ -15,6 +15,17 @@
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px;">
             {% for product in products %}
                 <div style="border: 1px solid #eee; padding: 20px; border-radius: 8px; text-align: center; background-color: white;">
+                    
+                    <!-- IMAGE DISPLAY LOGIC STARTS HERE -->
+                    {% if product.images.all %}
+                        <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" style="width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 15px;">
+                    {% else %}
+                        <div style="width: 100%; height: 250px; background-color: #f4f4f4; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-bottom: 15px; color: #aaa;">
+                            No Image
+                        </div>
+                    {% endif %}
+                    <!-- IMAGE DISPLAY LOGIC ENDS HERE -->
+
                     <h3 style="margin-bottom: 10px;">{{ product.product_name }}</h3>
                     <p style="color: #d4af37; font-size: 1.2rem; font-weight: bold;">{{ business.currency }} {{ product.price }}</p>
                     <p style="color: #666; margin-bottom: 15px;">{{ product.category.name|default:"Uncategorized" }}</p>

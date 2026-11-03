@@ -2,13 +2,13 @@ from django import forms
 from .models import Product
 
 class ProductForm(forms.ModelForm):
+    # We add a custom field here just for the form
+    image = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
+
     class Meta:
         model = Product
-        # We only want the user to fill out these specific fields. 
-        # We will handle 'business' in the view for security.
         fields = ['product_name', 'category', 'description', 'price', 'promotional_price', 'availability', 'publication_status']
         
-        # Add some styling to the inputs
         widgets = {
             'product_name': forms.TextInput(attrs={'class': 'form-control'}),
             'category': forms.Select(attrs={'class': 'form-control'}),

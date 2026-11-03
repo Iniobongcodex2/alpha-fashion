@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Business, BusinessMembership, Product
+from .models import Business, BusinessMembership, Product, ProductImage
 from .forms import ProductForm
 
 def home(request):
@@ -52,7 +52,8 @@ def add_product(request):
         return redirect('home')
 
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        # ADDED request.FILES HERE so Django accepts the image upload
+        form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
             # Don't save to database yet
             product = form.save(commit=False)
@@ -60,6 +61,16 @@ def add_product(request):
             product.business = membership.business
             # Save to database
             product.save()
+            
+            # NEW: Save the image if one was uploaded
+            image = form.cleaned_data.get('image')
+            if image:
+                ProductImage.objects.create(
+                    product=product,
+                    image=image,
+                    is_primary=True
+                )
+                
             # Redirect back to the dashboard after saving
             return redirect('dashboard')
     else:
