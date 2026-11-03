@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Business, BusinessMembership, Product
+from .forms import ProductForm
 
 def home(request):
     return render(request, 'core/home.html')
@@ -42,3 +43,29 @@ def dashboard(request):
         'role': membership.role
     }
     return render(request, 'core/dashboard.html', context)
+
+@login_required
+def add_product(request):
+    # First, verify the user belongs to a business
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            # Don't save to database yet
+            product = form.save(commit=False)
+            # Attach the business automatically for security!
+            product.business = membership.business
+            # Save to database
+            product.save()
+            # Redirect back to the dashboard after saving
+            return redirect('dashboard')
+    else:
+        form = ProductForm()
+
+    return render(request, 'core/add_product.html', {
+        'form': form, 
+        'business': membership.business
+    })

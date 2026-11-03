@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Product - {{ business.business_name }}{% endblock %}
+
+{% block content %}
+<div style="padding: 40px; max-width: 800px; margin: 0 auto;">
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'dashboard' %}" style="color: #1a1a5a; text-decoration: none;">&larr; Back to Dashboard</a>
+    </div>
+
+    <h1 style="color: #1a1a5a;">Add New Product</h1>
+    <p style="color: #666;">Adding to: <strong>{{ business.business_name }}</strong></p>
+
+    <form method="POST" style="margin-top: 30px; background: #f8f9fa; padding: 30px; border-radius: 8px; border: 1px solid #ddd;">
+        {% csrf_token %}
+        
+        {% for field in form %}
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: bold; margin-bottom: 5px; color: #1a1a5a;">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <p style="color: red; font-size: 14px; margin-top: 5px;">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+
+        <button type="submit" style="background: #e5b80b; color: #000; font-weight: bold; padding: 12px 30px; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+            Save Product
+        </button>
+    </form>
+</div>
+{% endblock %}

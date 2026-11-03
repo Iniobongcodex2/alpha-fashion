@@ -5,6 +5,13 @@
     <h1 style="color: #1a1a5a;">{{ business.business_name }} Dashboard</h1>
     <p>Welcome, <strong>{{ request.user.username }}</strong> (Role: {{ role }})</p>
     
+    <!-- ADDED THE BUTTON HERE -->
+    <div style="margin-top: 20px; margin-bottom: 20px;">
+        <a href="{% url 'add_product' %}" style="background-color: #e5b80b; color: #000; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;">
+            + Add New Product
+        </a>
+    </div>
+
     <div style="display: flex; gap: 20px; margin-top: 30px;">
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; flex: 1; border: 1px solid #ddd;">
             <h3>Total Products</h3>
