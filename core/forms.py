@@ -51,3 +51,23 @@ class BusinessForm(forms.ModelForm):
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 2}),
             'logo': forms.FileInput(attrs={'class': 'form-control'}),
         }
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+# ... (keep ProductForm and CategoryForm) ...
+
+class RegisterForm(UserCreationForm):
+    business_name = forms.CharField(max_length=255, widget=forms.TextInput(attrs={'class': 'form-control'}), label="Business Name")
+    
+    class Meta:
+        model = User
+        fields = ['username', 'business_name', 'password1', 'password2']
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+
+    # Add Bootstrap styling to the default password fields
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].widget.attrs.update({'class': 'form-control'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control'})

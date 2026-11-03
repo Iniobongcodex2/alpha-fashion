@@ -1,3 +1,6 @@
+from django.contrib.auth import login
+from django.db import transaction
+from .forms import RegisterForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .models import Business, BusinessMembership, Product, ProductImage, Category
@@ -109,3 +112,33 @@ def manage_profile(request):
         'form': form,
         'business': business
     })
+
+def register(request):
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            # transaction.atomic ensures that if creating the business fails, the user isn't created either
+            with transaction.atomic():
+                user = form.save()
+                
+                # Create the business
+                business_name = form.cleaned_data.get('business_name')
+                business = Business.objects.create(
+                    business_name=business_name,
+                    email=user.email # Use email if they provided one, otherwise it's blank
+                )
+                
+                # Link the user to the business
+                BusinessMembership.objects.create(
+                    user=user,
+                    business=business,
+                    role='Owner'
+                )
+                
+                # Log the user in
+                login(request, user)
+                return redirect('dashboard')
+    else:
+        form = RegisterForm()
+
+    return render(request, 'registration/register.html', {'form': form})

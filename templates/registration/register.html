@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Register Business - ALPHA FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg border-0 mt-5" style="border-top: 5px solid var(--alpha-gold) !important;">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4" style="color: var(--alpha-navy); font-weight: bold;">Start Your Store</h2>
+                    <p class="text-muted text-center mb-4">Create an account to launch your digital boutique</p>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.help_text %}
+                                    <div class="text-muted small mt-1">{{ field.help_text }}</div>
+                                {% endif %}
+                                {% if field.errors %}
+                                    <div class="text-danger small mt-1">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <button type="submit" class="btn btn-alpha-gold w-100 py-2 mt-3">Create My Store</button>
+                    </form>
+                    
+                    <div class="text-center mt-4">
+                        <p class="text-muted">Already have a store? <a href="{% url 'login' %}" class="text-decoration-none" style="color: var(--alpha-navy); font-weight: bold;">Log in here</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

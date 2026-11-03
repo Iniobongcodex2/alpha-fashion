@@ -10,7 +10,8 @@
     <div class="mt-5">
         <!-- CHANGED THIS LINE to 'shop_list' so Django can find the URL -->
         <a href="{% url 'shop_list' %}" class="btn btn-alpha-gold btn-lg px-4 me-2">Explore Collection</a>
-        <a href="/admin/" class="btn btn-alpha-navy btn-lg px-4">Business Login</a>
+        <!-- CHANGED THIS LINE to point to the custom login page -->
+        <a href="{% url 'login' %}" class="btn btn-alpha-navy btn-lg px-4">Business Login</a>
     </div>
 </div>
 

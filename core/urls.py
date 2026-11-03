@@ -10,6 +10,9 @@ urlpatterns = [
     # Product Details
     path('product/<int:pk>/', views.product_detail, name='product_detail'),
 
+    # Authentication URLs
+    path('register/', views.register, name='register'),
+
     # Dashboard URLs (Secured)
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/add-product/', views.add_product, name='add_product'),

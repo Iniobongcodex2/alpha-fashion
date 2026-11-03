@@ -1,0 +1,54 @@
+{% extends "admin/base.html" %}
+
+{% block title %}{{ title }} | ALPHA FASHION{% endblock %}
+
+{% block extrastyle %}
+<style>
+    /* Main Header Background - Navy Blue */
+    #header {
+        background-color: #1a2a44 !important;
+        color: #ffffff;
+    }
+    
+    /* Header Links - Gold */
+    #header a:link, #header a:visited {
+        color: #d4af37 !important;
+    }
+    
+    /* Breadcrumbs Background */
+    div.breadcrumbs {
+        background-color: #2c3e50 !important;
+        color: #ffffff;
+    }
+    
+    /* Breadcrumbs Links */
+    div.breadcrumbs a {
+        color: #d4af37 !important;
+    }
+
+    /* Primary Action Buttons - Gold */
+    .button, input[type=submit], input[type=button], .submit-row input, a.button {
+        background: #d4af37 !important;
+        color: #1a2a44 !important;
+        font-weight: bold;
+        border: none;
+    }
+    
+    /* Hover state for buttons */
+    .button:hover, input[type=submit]:hover, input[type=button]:hover {
+        background: #c19b2e !important;
+        color: #1a2a44 !important;
+    }
+
+    /* Links inside the admin */
+    a:link, a:visited {
+        color: #1a2a44;
+    }
+
+    /* Module headers (the blue bars on the homepage) */
+    .module h2, .module caption, .inline-group h2 {
+        background: #1a2a44 !important;
+        color: #d4af37 !important;
+    }
+</style>
+{% endblock %}
