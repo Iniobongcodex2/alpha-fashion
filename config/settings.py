@@ -13,6 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-*rxu9lpre!=10&p@7q@pxuz0qb^2i(alqhb4wo1u=u*_(l-v_#')
 
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -27,7 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage', # MUST BE BEFORE staticfiles
     'django.contrib.staticfiles',
+    'cloudinary',
     
     # ALPHA FASHION APPS
     'core',
@@ -117,11 +120,19 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 
-# --- WHITENOISE STORAGE SETUP ---
-# This tells WhiteNoise to compress and cache your static files in production
+# --- CLOUDINARY CONFIGURATION ---
+# These read the environment variables you will set on Render
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
+}
+
+# --- STORAGE SETUP ---
+# Tells Django to save images to Cloudinary, and static files (CSS) to WhiteNoise
 STORAGES = {
     "default": {
-        "BACKEND": "django.core.files.storage.FileSystemStorage",
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
     "staticfiles": {
         "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
