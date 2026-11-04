@@ -275,3 +275,41 @@ def upgrade_plan(request):
 
     # If someone tries to visit the URL directly without submitting the form
     return redirect('pricing')
+from django.contrib.auth.models import User # Add this to the top of your imports if it's not there!
+
+@login_required
+def manage_team(request):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    
+    # Security: Only the OWNER can manage the team
+    if not membership or membership.role != 'Owner':
+        return redirect('dashboard')
+
+    business = membership.business
+    team_members = BusinessMembership.objects.filter(business=business)
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        role = request.POST.get('role')
+
+        try:
+            # Find the user by their username
+            new_user = User.objects.get(username=username)
+            
+            # Check if they are already in this business
+            if not BusinessMembership.objects.filter(user=new_user, business=business).exists():
+                BusinessMembership.objects.create(
+                    user=new_user,
+                    business=business,
+                    role=role
+                )
+        except User.DoesNotExist:
+            # If the username doesn't exist, we just pass for now (we can add error messages later)
+            pass
+            
+        return redirect('manage_team')
+
+    return render(request, 'core/manage_team.html', {
+        'team_members': team_members, 
+        'business': business
+    })
