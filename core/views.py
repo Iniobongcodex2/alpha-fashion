@@ -67,15 +67,12 @@ def add_product(request):
     business = membership.business
 
     # --- SUBSCRIPTION LIMIT CHECK ---
-    # If the business is on the Free plan and has 20 or more products, block them
     current_product_count = Product.objects.filter(business=business).count()
     if business.subscription_status == 'Free' and current_product_count >= 20:
-        # Redirect back to the dashboard if the limit is reached
         return redirect('dashboard')
     # --------------------------------
 
     if request.method == 'POST':
-        # Pass the business so the form can filter categories
         form = ProductForm(request.POST, request.FILES, business=business)
         if form.is_valid():
             product = form.save(commit=False)
@@ -93,6 +90,75 @@ def add_product(request):
     return render(request, 'core/add_product.html', {'form': form, 'business': business})
 
 @login_required
+def edit_product(request, pk):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+        
+    business = membership.business
+    product = get_object_or_404(Product, pk=pk, business=business)
+
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product, business=business)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')
+    else:
+        form = ProductForm(instance=product, business=business)
+
+    return render(request, 'core/edit_product.html', {
+        'form': form, 
+        'product': product,
+        'business': business
+    })
+
+@login_required
+def delete_product(request, pk):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+        
+    business = membership.business
+    product = get_object_or_404(Product, pk=pk, business=business)
+    
+    if request.method == 'POST':
+        product.delete()
+        return redirect('dashboard')
+        
+    return render(request, 'core/delete_product.html', {'product': product})
+
+@login_required
+def manage_variants(request, pk):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+        
+    business = membership.business
+    product = get_object_or_404(Product, pk=pk, business=business)
+
+    if request.method == 'POST':
+        size = request.POST.get('size')
+        colour = request.POST.get('colour')
+        stock = request.POST.get('stock_quantity')
+        
+        if size and stock:
+            ProductVariant.objects.create(
+                product=product,
+                size=size,
+                colour=colour,
+                stock_quantity=stock
+            )
+            return redirect('manage_variants', pk=product.pk)
+
+    variants = ProductVariant.objects.filter(product=product)
+    
+    return render(request, 'core/manage_variants.html', {
+        'product': product,
+        'variants': variants,
+        'business': business
+    })
+
+@login_required
 def manage_categories(request):
     membership = BusinessMembership.objects.filter(user=request.user).first()
     if not membership:
@@ -102,7 +168,6 @@ def manage_categories(request):
     categories = Category.objects.filter(business=business)
 
     if request.method == 'POST':
-        # Added request.FILES so category images work
         form = CategoryForm(request.POST, request.FILES)
         if form.is_valid():
             category = form.save(commit=False)
@@ -143,63 +208,21 @@ def register(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
-            # transaction.atomic ensures that if creating the business fails, the user isn't created either
             with transaction.atomic():
                 user = form.save()
-                
-                # Create the business
                 business_name = form.cleaned_data.get('business_name')
                 business = Business.objects.create(
                     business_name=business_name,
-                    email=user.email # Use email if they provided one, otherwise it's blank
+                    email=user.email 
                 )
-                
-                # Link the user to the business
                 BusinessMembership.objects.create(
                     user=user,
                     business=business,
                     role='Owner'
                 )
-                
-                # Log the user in
                 login(request, user)
                 return redirect('dashboard')
     else:
         form = RegisterForm()
 
     return render(request, 'registration/register.html', {'form': form})
-
-@login_required
-def manage_variants(request, pk):
-    membership = BusinessMembership.objects.filter(user=request.user).first()
-    if not membership:
-        return redirect('home')
-        
-    business = membership.business
-    
-    # Security: Ensure the product belongs to this business
-    product = get_object_or_404(Product, pk=pk, business=business)
-
-    if request.method == 'POST':
-        # Get the data from the form
-        size = request.POST.get('size')
-        colour = request.POST.get('colour')
-        stock = request.POST.get('stock_quantity')
-        
-        if size and stock:
-            # Create the variant
-            ProductVariant.objects.create(
-                product=product,
-                size=size,
-                colour=colour,
-                stock_quantity=stock
-            )
-            return redirect('manage_variants', pk=product.pk)
-
-    variants = ProductVariant.objects.filter(product=product)
-    
-    return render(request, 'core/manage_variants.html', {
-        'product': product,
-        'variants': variants,
-        'business': business
-    })

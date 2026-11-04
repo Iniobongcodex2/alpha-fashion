@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Product - ALPHA FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 mt-5" style="border-top: 5px solid #dc3545 !important;">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4" style="color: #dc3545; font-weight: bold;">Delete Product?</h2>
+                    <p class="text-muted mb-4">Are you sure you want to permanently delete <strong>"{{ product.product_name }}"</strong>? This action cannot be undone.</p>
+
+                    <form method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger w-100 py-2 mb-2">Yes, Delete It</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary w-100 py-2">Cancel</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

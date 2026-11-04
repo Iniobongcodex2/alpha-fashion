@@ -28,7 +28,7 @@
             <th style="padding: 10px; text-align: left;">Product Name</th>
             <th style="padding: 10px; text-align: left;">Price</th>
             <th style="padding: 10px; text-align: left;">Status</th>
-            <th style="padding: 10px; text-align: left;">Action</th> <!-- NEW COLUMN -->
+            <th style="padding: 10px; text-align: left;">Action</th>
         </tr>
         {% for product in products %}
         <tr style="border-bottom: 1px solid #ddd;">
@@ -36,8 +36,12 @@
             <td style="padding: 10px;">{{ business.currency }} {{ product.price }}</td>
             <td style="padding: 10px;">{{ product.publication_status }}</td>
             <td style="padding: 10px;">
-                <!-- NEW BUTTON -->
-                <a href="{% url 'manage_variants' product.id %}" style="color: #1a1a5a; font-weight: bold; text-decoration: underline;">Manage Stock</a>
+                <!-- EDIT BUTTON -->
+                <a href="{% url 'edit_product' product.id %}" style="color: #0d6efd; font-weight: bold; text-decoration: underline; margin-right: 15px;">Edit</a>
+                
+                <a href="{% url 'manage_variants' product.id %}" style="color: #1a1a5a; font-weight: bold; text-decoration: underline; margin-right: 15px;">Manage Stock</a>
+                
+                <a href="{% url 'delete_product' product.id %}" style="color: #dc3545; font-weight: bold; text-decoration: underline;">Delete</a>
             </td>
         </tr>
         {% empty %}

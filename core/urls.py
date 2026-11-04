@@ -16,7 +16,9 @@ urlpatterns = [
     # Dashboard URLs (Secured)
     path('dashboard/', views.dashboard, name='dashboard'),
     path('dashboard/add-product/', views.add_product, name='add_product'),
-    path('dashboard/product/<int:pk>/variants/', views.manage_variants, name='manage_variants'),
+    path('dashboard/product/<int:pk>/variants/', views.manage_variants, name='manage_variants'), 
+    path('dashboard/product/<int:pk>/delete/', views.delete_product, name='delete_product'),
+    path('dashboard/product/<int:pk>/edit/', views.edit_product, name='edit_product'),
     path('dashboard/categories/', views.manage_categories, name='manage_categories'),
     path('dashboard/profile/', views.manage_profile, name='manage_profile'),
 ]
