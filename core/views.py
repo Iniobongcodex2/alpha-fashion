@@ -226,3 +226,23 @@ def register(request):
         form = RegisterForm()
 
     return render(request, 'registration/register.html', {'form': form})
+@login_required
+def super_admin_dashboard(request):
+    # SECURITY: Only allow superusers (You) to access this page
+    if not request.user.is_superuser:
+        return redirect('dashboard')
+        
+    # Get all businesses on the platform
+    all_businesses = Business.objects.all().order_by('-created_at')
+    
+    # Platform stats
+    total_businesses = all_businesses.count()
+    total_products = Product.objects.all().count()
+    
+    context = {
+        'businesses': all_businesses,
+        'total_businesses': total_businesses,
+        'total_products': total_products,
+    }
+    
+    return render(request, 'core/super_admin_dashboard.html', context)
