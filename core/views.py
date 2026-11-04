@@ -1,10 +1,9 @@
 from django.contrib.auth import login
 from django.db import transaction
-from .forms import RegisterForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Business, BusinessMembership, Product, ProductImage, Category
-from .forms import ProductForm, CategoryForm, BusinessForm
+from .models import Business, BusinessMembership, Product, ProductImage, Category, ProductVariant
+from .forms import RegisterForm, ProductForm, CategoryForm, BusinessForm
 
 def home(request):
     return render(request, 'core/home.html')
@@ -15,8 +14,25 @@ def shop_list(request):
 
 def business_storefront(request, slug):
     business = get_object_or_404(Business, slug=slug)
+    
+    # Start with all published products for this business
     products = Product.objects.filter(business=business, publication_status='Published')
-    return render(request, 'core/storefront.html', {'business': business, 'products': products})
+    
+    # 1. Handle Search Query (q)
+    query = request.GET.get('q')
+    if query:
+        products = products.filter(product_name__icontains=query) # Case-insensitive search
+        
+    # 2. Handle Category Filter (category)
+    category_id = request.GET.get('category')
+    if category_id:
+        products = products.filter(category_id=category_id)
+
+    context = {
+        'business': business,
+        'products': products
+    }
+    return render(request, 'core/storefront.html', context)
 
 def product_detail(request, pk):
     product = get_object_or_404(Product, pk=pk)
@@ -47,13 +63,23 @@ def add_product(request):
     membership = BusinessMembership.objects.filter(user=request.user).first()
     if not membership:
         return redirect('home')
+        
+    business = membership.business
+
+    # --- SUBSCRIPTION LIMIT CHECK ---
+    # If the business is on the Free plan and has 20 or more products, block them
+    current_product_count = Product.objects.filter(business=business).count()
+    if business.subscription_status == 'Free' and current_product_count >= 20:
+        # Redirect back to the dashboard if the limit is reached
+        return redirect('dashboard')
+    # --------------------------------
 
     if request.method == 'POST':
         # Pass the business so the form can filter categories
-        form = ProductForm(request.POST, request.FILES, business=membership.business)
+        form = ProductForm(request.POST, request.FILES, business=business)
         if form.is_valid():
             product = form.save(commit=False)
-            product.business = membership.business
+            product.business = business
             product.save()
             
             image = form.cleaned_data.get('image')
@@ -62,9 +88,9 @@ def add_product(request):
                 
             return redirect('dashboard')
     else:
-        form = ProductForm(business=membership.business)
+        form = ProductForm(business=business)
 
-    return render(request, 'core/add_product.html', {'form': form, 'business': membership.business})
+    return render(request, 'core/add_product.html', {'form': form, 'business': business})
 
 @login_required
 def manage_categories(request):
@@ -142,3 +168,38 @@ def register(request):
         form = RegisterForm()
 
     return render(request, 'registration/register.html', {'form': form})
+
+@login_required
+def manage_variants(request, pk):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+        
+    business = membership.business
+    
+    # Security: Ensure the product belongs to this business
+    product = get_object_or_404(Product, pk=pk, business=business)
+
+    if request.method == 'POST':
+        # Get the data from the form
+        size = request.POST.get('size')
+        colour = request.POST.get('colour')
+        stock = request.POST.get('stock_quantity')
+        
+        if size and stock:
+            # Create the variant
+            ProductVariant.objects.create(
+                product=product,
+                size=size,
+                colour=colour,
+                stock_quantity=stock
+            )
+            return redirect('manage_variants', pk=product.pk)
+
+    variants = ProductVariant.objects.filter(product=product)
+    
+    return render(request, 'core/manage_variants.html', {
+        'product': product,
+        'variants': variants,
+        'business': business
+    })

@@ -5,18 +5,10 @@
     <h1 style="color: #1a1a5a;">{{ business.business_name }} Dashboard</h1>
     <p>Welcome, <strong>{{ request.user.username }}</strong> (Role: {{ role }})</p>
     
-    <!-- THE BUTTONS -->
-    <div style="margin-top: 20px; margin-bottom: 20px;">
-        <a href="{% url 'add_product' %}" style="background-color: #e5b80b; color: #000; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block;">
-            + Add New Product
-        </a>
-        <!-- FIXED THIS URL NAME BELOW -->
-        <a href="{% url 'manage_categories' %}" style="background-color: #1a1a5a; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block; margin-left: 10px;">
-            Manage Categories
-        </a>
-        <a href="{% url 'manage_profile' %}" style="background-color: #333; color: white; padding: 10px 20px; text-decoration: none; font-weight: bold; border-radius: 4px; display: inline-block; margin-left: 10px;">
-            Store Settings
-        </a>
+    <div style="margin-bottom: 20px;">
+        <a href="{% url 'add_product' %}" class="btn btn-alpha-gold mb-4">+ Add New Product</a>
+        <a href="{% url 'manage_categories' %}" class="btn btn-outline-dark mb-4 ms-2">Manage Categories</a>
+        <a href="{% url 'manage_profile' %}" class="btn btn-outline-secondary mb-4 ms-2">Store Settings</a>
     </div>
 
     <div style="display: flex; gap: 20px; margin-top: 30px;">
@@ -36,16 +28,21 @@
             <th style="padding: 10px; text-align: left;">Product Name</th>
             <th style="padding: 10px; text-align: left;">Price</th>
             <th style="padding: 10px; text-align: left;">Status</th>
+            <th style="padding: 10px; text-align: left;">Action</th> <!-- NEW COLUMN -->
         </tr>
         {% for product in products %}
         <tr style="border-bottom: 1px solid #ddd;">
             <td style="padding: 10px;">{{ product.product_name }}</td>
             <td style="padding: 10px;">{{ business.currency }} {{ product.price }}</td>
             <td style="padding: 10px;">{{ product.publication_status }}</td>
+            <td style="padding: 10px;">
+                <!-- NEW BUTTON -->
+                <a href="{% url 'manage_variants' product.id %}" style="color: #1a1a5a; font-weight: bold; text-decoration: underline;">Manage Stock</a>
+            </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="3" style="padding: 10px; text-align: center;">You have not added any products yet.</td>
+            <td colspan="4" style="padding: 10px; text-align: center;">You have not added any products yet.</td>
         </tr>
         {% endfor %}
     </table>

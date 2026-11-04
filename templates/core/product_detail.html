@@ -3,59 +3,60 @@
 {% block title %}{{ product.product_name }} - ALPHA FASHION{% endblock %}
 
 {% block content %}
-<div style="max-width: 1000px; margin: 40px auto; padding: 20px;">
-    
-    <!-- Breadcrumb navigation -->
-    <p style="color: #666; margin-bottom: 20px;">
-        <a href="{% url 'shop_list' %}" style="color: #666; text-decoration: none;">Shop</a> > 
-        <a href="{% url 'business_storefront' product.business.slug %}" style="color: #666; text-decoration: none;">{{ product.business.business_name }}</a> > 
+<div class="container py-5">
+    <!-- Breadcrumbs -->
+    <p class="text-muted mb-4">
+        <a href="{% url 'shop_list' %}" class="text-decoration-none text-muted">Shop</a> > 
+        <a href="{% url 'business_storefront' business.slug %}" class="text-decoration-none text-muted">{{ business.business_name }}</a> > 
         {{ product.product_name }}
     </p>
 
-    <div style="display: flex; gap: 40px; flex-wrap: wrap;">
-        
-        <!-- Left Side: Large Image -->
-        <div style="flex: 1; min-width: 300px;">
+    <div class="row">
+        <!-- Product Image -->
+        <div class="col-md-6 mb-4">
             {% if product.images.all %}
-                <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
+                <img src="{{ product.images.first.image.url }}" alt="{{ product.product_name }}" class="img-fluid rounded shadow-sm" style="width: 100%; max-height: 500px; object-fit: cover;">
             {% else %}
-                <div style="width: 100%; height: 400px; background-color: #f4f4f4; display: flex; align-items: center; justify-content: center; border-radius: 8px; color: #aaa;">
+                <div class="bg-light d-flex align-items-center justify-content-center rounded" style="height: 400px; color: #aaa;">
                     No Image Available
                 </div>
             {% endif %}
         </div>
 
-        <!-- Right Side: Product Info -->
-        <div style="flex: 1; min-width: 300px;">
-            <h1 style="color: #1a2a44; font-size: 2.5rem; margin-bottom: 10px;">{{ product.product_name }}</h1>
+        <!-- Product Details -->
+        <div class="col-md-6">
+            <h1 style="color: var(--alpha-navy); font-weight: bold;">{{ product.product_name }}</h1>
+            <h3 style="color: var(--alpha-gold); font-weight: bold;" class="mb-4">{{ business.currency }} {{ product.price }}</h3>
             
-            <p style="color: #d4af37; font-size: 1.8rem; font-weight: bold; margin-bottom: 20px;">
-                {{ product.business.currency }} {{ product.price }}
-            </p>
+            <h5 class="fw-bold">Description</h5>
+            <p class="text-muted">{{ product.description|default:"No description provided." }}</p>
 
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: #1a2a44; font-size: 1.2rem; margin-bottom: 10px;">Description</h3>
-                <p style="color: #555; line-height: 1.6;">{{ product.description|default:"No description provided." }}</p>
-            </div>
-
-            <!-- Sizes/Variants -->
+            <!-- Available Options (Variants) -->
+            <h5 class="fw-bold mt-4">Available Options</h5>
             {% if product.variants.all %}
-            <div style="margin-bottom: 30px;">
-                <h3 style="color: #1a2a44; font-size: 1.2rem; margin-bottom: 10px;">Available Options</h3>
-                <ul style="list-style-type: none; padding: 0; display: flex; gap: 10px; flex-wrap: wrap;">
+                <ul class="list-group mb-4">
                     {% for variant in product.variants.all %}
-                        <li style="border: 1px solid #ccc; padding: 8px 15px; border-radius: 4px; background-color: #f9f9f9;">
-                            {{ variant.size }} {{ variant.colour }}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <strong>{{ variant.size|default:"" }}</strong> {{ variant.colour|default:"" }}
+                            </span>
+                            {% if variant.stock_quantity > 0 %}
+                                <span class="badge bg-success rounded-pill">{{ variant.stock_quantity }} in stock</span>
+                            {% else %}
+                                <span class="badge bg-danger rounded-pill">Out of stock</span>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
-            </div>
+            {% else %}
+                <p class="text-muted">No specific sizes or colors listed.</p>
             {% endif %}
 
             <!-- WhatsApp Button -->
-            <a href="https://wa.me/{{ product.business.whatsapp_number|cut:' '|cut:'+'|cut:'-' }}?text=Hi%20{{ product.business.business_name|urlencode }},%20I%20am%20interested%20in%20the%20{{ product.product_name|urlencode }}%20({{ product.business.currency }}%20{{ product.price }}).%20Is%20it%20available%3F" 
+            <a href="https://wa.me/{{ business.whatsapp_number|cut:' '|cut:'+'|cut:'-' }}?text=Hi%20{{ business.business_name|urlencode }},%20I%20am%20interested%20in%20the%20{{ product.product_name|urlencode }}%20({{ business.currency }}%20{{ product.price }}).%20Is%20it%20available%3F" 
                target="_blank" 
-               style="display: inline-block; width: 100%; text-align: center; background-color: #25D366; color: white; padding: 15px; text-decoration: none; border-radius: 8px; font-weight: bold; font-size: 1.2rem;">
+               class="btn w-100 py-3 mt-3" 
+               style="background-color: #25D366; color: white; font-weight: bold; font-size: 1.1rem;">
                 Enquire on WhatsApp
             </a>
         </div>
