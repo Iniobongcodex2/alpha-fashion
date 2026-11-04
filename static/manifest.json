@@ -1,0 +1,16 @@
+{
+  "name": "ALPHA FASHION",
+  "short_name": "ALPHA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a2a44",
+  "theme_color": "#1a2a44",
+  "description": "YOUR BRAND. YOUR COLLECTION. YOUR DIGITAL STORE.",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/3534/3534595.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
