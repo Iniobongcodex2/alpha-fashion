@@ -246,3 +246,32 @@ def super_admin_dashboard(request):
     }
     
     return render(request, 'core/super_admin_dashboard.html', context)
+@login_required
+def pricing(request):
+    membership = BusinessMembership.objects.filter(user=request.user).first()
+    if not membership:
+        return redirect('home')
+        
+    # Pass the business so the template knows which plan is currently active
+    return render(request, 'core/pricing.html', {'business': membership.business})
+
+@login_required
+def upgrade_plan(request):
+    if request.method == 'POST':
+        membership = BusinessMembership.objects.filter(user=request.user).first()
+        if not membership:
+            return redirect('home')
+
+        business = membership.business
+        new_plan = request.POST.get('plan')
+
+        # Security check: Ensure the submitted plan is valid
+        valid_plans = ['Free', 'Basic', 'Professional', 'Business']
+        if new_plan in valid_plans:
+            business.subscription_status = new_plan
+            business.save()
+
+        return redirect('dashboard')
+
+    # If someone tries to visit the URL directly without submitting the form
+    return redirect('pricing')

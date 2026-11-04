@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+
+{% block title %}Upgrade Your Plan - ALPHA FASHION{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 style="color: var(--alpha-navy); font-weight: bold;">Choose the Perfect Plan for Your Store</h1>
+        <p class="lead text-muted">Scale your business with more products and advanced features.</p>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 mb-4 text-center">
+        
+        <!-- Free Plan -->
+        <div class="col mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h4 class="my-0 fw-normal text-muted">Starter</h4>
+                    <h1 class="card-title pricing-card-title">Free</h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start">
+                        <li>✔ Max 20 products</li>
+                        <li>✔ Basic storefront</li>
+                        <li>✔ WhatsApp enquiries</li>
+                    </ul>
+                    {% if business.subscription_status == 'Free' %}
+                        <button class="w-100 btn btn-lg btn-secondary" disabled>Current Plan</button>
+                    {% else %}
+                        <form method="POST" action="{% url 'upgrade_plan' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="plan" value="Free">
+                            <button type="submit" class="w-100 btn btn-lg btn-outline-dark">Downgrade to Free</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Basic Plan -->
+        <div class="col mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h4 class="my-0 fw-normal text-muted">Basic</h4>
+                    <h1 class="card-title pricing-card-title">AED 49<span class="text-muted fw-light">/mo</span></h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start">
+                        <li>✔ Max 100 products</li>
+                        <li>✔ Business branding</li>
+                        <li>✔ WhatsApp enquiries</li>
+                    </ul>
+                    {% if business.subscription_status == 'Basic' %}
+                        <button class="w-100 btn btn-lg btn-secondary" disabled>Current Plan</button>
+                    {% else %}
+                        <form method="POST" action="{% url 'upgrade_plan' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="plan" value="Basic">
+                            <button type="submit" class="w-100 btn btn-lg btn-outline-dark">Upgrade to Basic</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Professional Plan -->
+        <div class="col mb-4">
+            <div class="card h-100 shadow border-0" style="border: 2px solid var(--alpha-gold) !important;">
+                <div class="card-header py-3 text-white" style="background-color: var(--alpha-gold);">
+                    <h4 class="my-0 fw-normal">Professional</h4>
+                </div>
+                <div class="card-body p-4">
+                    <h1 class="card-title pricing-card-title">AED 99<span class="text-muted fw-light">/mo</span></h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start">
+                        <li>✔ Max 500 products</li>
+                        <li>✔ Advanced analytics</li>
+                        <li>✔ Promotions</li>
+                    </ul>
+                    {% if business.subscription_status == 'Professional' %}
+                        <button class="w-100 btn btn-lg btn-secondary" disabled>Current Plan</button>
+                    {% else %}
+                        <form method="POST" action="{% url 'upgrade_plan' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="plan" value="Professional">
+                            <button type="submit" class="w-100 btn btn-lg btn-alpha-gold">Upgrade to Pro</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Plan -->
+        <div class="col mb-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body p-4">
+                    <h4 class="my-0 fw-normal text-muted">Business</h4>
+                    <h1 class="card-title pricing-card-title">AED 199<span class="text-muted fw-light">/mo</span></h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start">
+                        <li>✔ Max 2,000 products</li>
+                        <li>✔ Staff accounts</li>
+                        <li>✔ Advanced reporting</li>
+                    </ul>
+                    {% if business.subscription_status == 'Business' %}
+                        <button class="w-100 btn btn-lg btn-secondary" disabled>Current Plan</button>
+                    {% else %}
+                        <form method="POST" action="{% url 'upgrade_plan' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="plan" value="Business">
+                            <button type="submit" class="w-100 btn btn-lg btn-outline-dark">Upgrade to Business</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+    
+    <div class="text-center mt-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-secondary">Back to Dashboard</a>
+    </div>
+</div>
+{% endblock %}
